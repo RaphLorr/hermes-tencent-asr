@@ -4,9 +4,11 @@ kind: general
 version: 0.1.0
 description: >
   Speech-to-text through Tencent Cloud's SentenceRecognition (一句话识别),
-  registered as the STT provider `tencent`. Accepts raw SILK, which is what
-  WeChat voice notes are, so nothing has to be transcoded first. Short clips
-  only: 60 seconds / 3MB per request.
+  registered as the STT provider `tencent`. Tuned for WeChat voice notes:
+  sniffs the real format rather than trusting the filename, and resamples to
+  whatever rate the engine name promises — Hermes decodes WeChat SILK at
+  24 kHz, which no Tencent engine reads. Short clips only: 60 seconds / 3MB
+  per request.
 author: Raphael HUANG
 requires_env:
   - name: TENCENT_ASR_SECRET_ID
