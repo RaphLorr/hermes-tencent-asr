@@ -1,6 +1,9 @@
 name: tencent-asr
 label: Tencent Cloud ASR
-kind: general
+# Hermes' kinds are backend / exclusive / model-provider / platform /
+# standalone. A transcription provider is none of the special ones — it
+# registers through ctx and is managed generically.
+kind: standalone
 version: 0.1.0
 description: >
   Speech-to-text through Tencent Cloud's SentenceRecognition (一句话识别),
