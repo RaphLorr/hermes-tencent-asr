@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 
 from agent.transcription_provider import TranscriptionProvider
 
-from . import settings
+from . import resample, settings
 from .audio_format import SUPPORTED_FORMATS, describe, format_for
 from .client import AsrError, transcribe as call_tencent
 
@@ -104,9 +104,18 @@ class TencentASRProvider(TranscriptionProvider):
             )
 
         engine = (model or "").strip() or settings.engine(stt_config)
+
+        # Hermes hands us 24 kHz WAV for every WeChat voice note (pilk's
+        # default), which no Tencent engine reads. Fix it before sending.
+        prepared = resample.for_engine(audio, voice_format, engine)
+        if prepared.notes:
+            logger.info(
+                "Tencent ASR adjusted %s: %s", Path(file_path).name, "; ".join(prepared.notes)
+            )
+
         try:
             result = call_tencent(
-                audio,
+                prepared.data,
                 voice_format,
                 secret_id=secret_id,
                 secret_key=secret_key,

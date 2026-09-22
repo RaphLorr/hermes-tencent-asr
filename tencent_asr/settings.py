@@ -22,6 +22,11 @@ DEFAULT_REGION = "ap-shanghai"
 # 16k_zh is the general Mandarin model and the one the free tier covers.
 DEFAULT_ENGINE = "16k_zh"
 
+# The prefix of an EngSerViceType is a contract, not a label: it tells Tencent
+# what rate to read the samples at. Audio that disagrees is decoded at the
+# wrong speed and comes back as an empty transcript with no error.
+_ENGINE_SAMPLE_RATES = {"8k": 8000, "16k": 16000}
+
 # SourceType 1 = audio inlined as base64 in the request body.
 SOURCE_TYPE_INLINE = 1
 
@@ -78,6 +83,17 @@ def region(stt_config: Optional[Dict[str, Any]] = None) -> str:
 
 def engine(stt_config: Optional[Dict[str, Any]] = None) -> str:
     return resolve("engine", stt_config, DEFAULT_ENGINE)
+
+
+def engine_sample_rate(engine_name: str) -> Optional[int]:
+    """``16k_zh`` -> ``16000``. ``None`` for a naming scheme we do not know.
+
+    ``None`` means "leave the audio alone" rather than "assume 16k": Tencent
+    adds engines, and resampling to a rate the engine does not want would turn
+    a working clip into a broken one.
+    """
+    prefix = str(engine_name or "").split("_", 1)[0].strip().lower()
+    return _ENGINE_SAMPLE_RATES.get(prefix)
 
 
 def redact(secret: Optional[str]) -> str:
