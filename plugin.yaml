@@ -1,0 +1,30 @@
+name: tencent-asr
+label: Tencent Cloud ASR
+kind: general
+version: 0.1.0
+description: >
+  Speech-to-text through Tencent Cloud's SentenceRecognition (一句话识别),
+  registered as the STT provider `tencent`. Accepts raw SILK, which is what
+  WeChat voice notes are, so nothing has to be transcoded first. Short clips
+  only: 60 seconds / 3MB per request.
+author: Raphael HUANG
+requires_env:
+  - name: TENCENT_ASR_SECRET_ID
+    description: "Tencent Cloud API SecretId (访问管理 → API 密钥管理)"
+    prompt: "Tencent Cloud SecretId"
+    password: true
+  - name: TENCENT_ASR_SECRET_KEY
+    description: "Tencent Cloud API SecretKey — shown once when the key is created"
+    prompt: "Tencent Cloud SecretKey"
+    password: true
+optional_env:
+  - name: TENCENT_ASR_REGION
+    description: "API region (default ap-shanghai). ASR is not available in every region."
+    prompt: "Region"
+    password: false
+  - name: TENCENT_ASR_ENGINE
+    description: >
+      EngSerViceType — which recognition model. 16k_zh (default, Mandarin),
+      16k_zh_dialect, 16k_en, 16k_yue. Some need enabling on the account first.
+    prompt: "Engine"
+    password: false
